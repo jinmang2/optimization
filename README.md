@@ -7,6 +7,8 @@
 
 ![img](http://image.kyobobook.co.kr/images/book/xlarge/031/x9780387303031.jpg)
 
+![img](https://web.stanford.edu/~boyd/cvxbook/bv_cvxbook_cover.jpg)
+http://web.stanford.edu/class/ee364a/
 
 ### Prerequisite
 - Linear Algebra 90%

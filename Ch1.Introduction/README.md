@@ -108,4 +108,17 @@ $$\begin{array}{rll}
 - 보통 `Continuous optimization` 문제가 풀기 쉽다!
 - 함수의 smoothness가 특정 x의 objective와 constraints 정보를 사용하여 x와 가까운 점들의 함수 동작 정보를 추론(deduce)하기 쉽기 때문
 - `discrete problem`의 경우 두 점이 **가깝다** 를 어떻게 측정하는지에 따라 feasible point에서 다른 point로 이동할 때 objective와 constraint의 양상이 계속 달라진다.
--
+- `discrete optimization` 문제에서의 feasible set들은 `nonconvexity`의 극단적인 형태를 구축한다고 이해하면 된다.
+- `nonconvexity`? 두 feasible points의 convex combination이 일반적으로 feasible하지 않은 것.
+
+**Discrete Optimization**
+- 이 책에서는 위 문제를 직접적으로 다루진 않을 것
+- Papadimiriou와 Steiglitz가 쓴 서적,
+- Nemhauser와 Wolsey가 쓴 서적,
+- Cook et al. 논문,
+- 그리고 Wolsey의 논문을 추천합니다.
+- 근데 중요한 건 `continuous optimization` 기술이 종종 `discrete optimization` 문제를 푸는 중요한 역할을 한다는 것을 기억하라
+- 예로, 해당 책 Chapter 13에서 다룰 방법이 적용이 된다더라
+
+#### Constrained and Unconstrained Optimization
+우선 여기까지 작성

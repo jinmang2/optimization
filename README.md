@@ -6,6 +6,7 @@
 - [JeHwan-Ahn](https://github.com/hwani01)
 
 ![img](http://image.kyobobook.co.kr/images/book/xlarge/031/x9780387303031.jpg)
+https://link.springer.com/content/pdf/10.1007%2F978-0-387-40065-5.pdf
 
 ![img](https://web.stanford.edu/~boyd/cvxbook/bv_cvxbook_cover.jpg)
 http://web.stanford.edu/class/ee364a/

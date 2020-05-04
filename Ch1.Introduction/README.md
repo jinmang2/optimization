@@ -121,4 +121,108 @@ $$\begin{array}{rll}
 - 예로, 해당 책 Chapter 13에서 다룰 방법이 적용이 된다더라
 
 #### Constrained and Unconstrained Optimization
-우선 여기까지 작성
+Unconstrained optimization 문제
+- $\Epsilon = \mathcal{L} = \emptyset$
+- 알고리즘에 간섭 X, solution에도 영향을 미치지 않음
+- 무시해도 무방할 수 있음
+
+Constrained optimization 문제
+- 모델에 제약이 있는 경우
+- $0 \leq x_1 \leq 100$ 과 같이 제약이 존재
+- 선형 / 비선형 / complex 등 여러가지 존재
+
+Linear Programming
+- 제약 조건이 전부 x에 대한 선형 함수인 경우
+- 대부분 수식화시킬 수 있고 풀 수 있다!
+- 경영, 금융, 경제 api 등
+
+Nonlinear Programming
+- 몇몇 제약과 목적 함수가 비선형 함수로 된 경우
+- 물리, 공학, 경영 및 경제 과학 등
+
+#### Global and Local Optimization
+- 많은 비선형 최적화 문제는 지역적 해를 가짐
+- 항상 global solution을 찾을 순 없음
+  - global sol? 모든 feasible point에서 가장 작은 값을 가지는 점
+- global solution을 특정하기란 어려움
+- convex programming 및 선형 api에서 local sol은 global sol임
+- 일반적인 비선형 문제에서는 제약이든 비제약이든 local sol은 global sol이 아님
+- 이 책에선 global optim은 넘기고 local sol을 계산 및 특징화시키는데 집중할 것
+- 그러나 많은 global optim 알고리즘이 local optim 문제에서 사용되는 겨우가 있음
+
+#### Stochastic and Deterministic Optimization
+- 몇몇 최적화 문제에서 모델은 시간과 같은 미지수 때문에 특정할 수 없는 경우가 존재.
+- 이러한 특징은 많은 경제와 금융 문제에서 도드라짐
+  - 이자율, 상품 수요 및 가격, 선물 원자재 가격 등에 영향을 받기 때문
+  - 불확실성은 자연적으로 생겨남
+- 불확실성을 단지 추측하는 것보다 모델을 구축하는 자들은 추가적인 지식을 활용하여 더 유용한 솔루션ㅇ르 얻음
+- 예를 들어, 불특정 수요에 대한 가능한 시나리오의 수가 될 수 있다
+- Stochastic Optimization 알고리즘이 이러한 불확실성을 계량하는데 사용됨
+- Chance-constrained optimization, Robustness Optimization도 있음
+- 본 책에서 stochastic optimization 문제는 고려하지 않음
+- 대신 deterministic optimization 문제를 다룸
+- 그러나 확률적 최적화 문제가 deterministic subproblem에 활용되는 경우가 많음
+
+#### Convexity
+- convexity는 최적화의 기본 개념
+- 이 성질에 대한 많은 문제들이 존재해!
+- `"convex"` 라는 용어는 집합이나 함수에 적용될 수 있어
+- set $S \in \mathbb{R}^n$이 `convex set`이라고 함은 아래 조건을 만족시켜야 해
+  - the straight line segment connecting any two points in $S$ lies entierly inside $S$
+  - 무슨 말...? 수식으로는 아래와 같음
+
+  $$\text{for any two points }x\in S\;and\;y\in S,\;\alpha f(x)+(1-\alpha)f(y)\in S\quad\forall \alpha\in[0,1]$$
+- function $f$가 `convex set`이라 부르려면 아래 조건을 만족해야 함
+  - domain $S$가 convex set
+  - $S$의 임의의 두 점 $x$와 $y$에 대해 아래 조건을 만족 (homogeneous)
+
+  $$f(\alpha x + (1-\alpha)y)\leq \alpha f(x) + (1-\alpha)f(y),\quad \forall \alpha \in[0,1]\cdots(1.4)$$
+
+- 간단한 convex set의 예시
+  - unit ball
+  $$\{y\in\mathbb{R}^n | \Vert y \Vert_2 \leq 1\}$$
+  - 아래와 같이 선형 부등식과 방정식으로 정의된 polyhedron
+  $$\{x\in\mathbb{R}^n | Ax=b,\;Cx \leq d\}$$
+
+- 간단한 convex function의 예시
+  - linear function
+    $$f(x)=c^T x + \alpha,\;\forall c\in\mathbb{R}^n,\;\alpha\in\mathbb{R}$$
+  - convex quadratic finction
+    $$f(x)=x^T Hx,\quad H:\text{ symmetric positive semidefinite matrix}$$
+
+- 함수 $f$가 `strictly convex`?
+  - (1.4)의 부등식이 strict하면!
+  - $x\neq y,\quad \alpha\in(0,1)$
+
+- 함수 $f$가 `concave`?
+  - $-f$가 `convex`
+
+- (1.1)의 목적 함수와 feasible region이 모두 convex하면 모든 local solution은 global solution
+
+- `convex programming`은 아래와 같은 경우를 말함
+  - 목적 함수가 convex
+  - 제약 함수 방정식 $c_i(\cdot),i\in\mathcal{E}$이 linear
+  - 제약 함수 부등식 $c_i(\cdot),i\in\mathcal{L}$이 concave
+
+#### Optimization Algorithms
+- 최적화 알고리즘은 반복적
+- 변수 x에 대해 초기 가정을 하고 solution이라 생각되는 임시 파일을 추정하며 sequence를 생성
+- 한 iterate에서 다음으로 이동하는 전략은 한 알고리즘을 다른 것과 구별 함
+- 대부분의 전략은 목적 함수 $f$, 제약 함수 $c_i$와 이러한 함수들의 고려 가능한 1, 2차 미분의 값을 사용한다.
+- 몇몇 알고리즘은 이전 iteration에서 얻어지는 정보를 계산한다.
+  - 다른 알고리즘은 현재 시점에서 얻어지는 정보만 사용한다.
+- 좋은 알고리즘은 아래와 같은 특징을 가진다.
+  - Robustness: 출발점의 모든 합리적인 가치에 대해, 그들은 반에서 매우 다양한 문제들에 대해 좋은 성적을 거두어야 한다.
+  - Efficiency: 계산에 시간이 많이 들거나 많은 용량을 필요로 하지 않는다.
+  - Accuracy: 데이터 민감성 / 컴퓨터 rounding err를 제외하고 정밀한 solution을 도출할 수 있다.
+
+- 위 goal들은 상충된다.
+  - 예를 들어 매우 큰 비제약 비선형 문제에 대한 빠르게 수렴하는 방법은 많은 computer storage를 요구한다.
+  - 반면 robust method는 느리다.
+  - 수렴 속도와 요구 저장소 용량 / 강건성과 속도간의 tradeoff 관계는 수치 최적화의 핵심 이슈
+  - 본 교재에서 매우 많이 다뤄질 예정
+
+- 최적화의 수학적 이론은 아래 두 가지에 사용된다.
+  - optimal point를 특징화시키는 데
+  - 최상의 알고리즘의 기초를 제공하는데
+- 뒷받침 이론을 확실하게 파악하지 않고는 수치 최적화를 잘 이해할 수 없다.

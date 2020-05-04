@@ -58,7 +58,7 @@ $$\min_{x\in\mathbb{R}^n}f(x)\quad\;\text{subject to}\begin{cases}
 $\mathcal{L}$과 $\Epsilon$은 quality와 inequality constraints의 Index set.
 간단한 예로 아래와 같이 생각할 수 있음
 
-$$\min{{(x_1-2)}^2+{(x_2-1)^2}}\quad\;\text{subject to}\begin{cases}
+$$\min{(x_1-2)}^2+{(x_2-1)^2}\quad\;\text{subject to}\begin{cases}
     {x_1}^2-x_2 \leq 0\\
     x_1+x_2 \leq 2.
 \end{cases}\quad\cdots(1.2)$$

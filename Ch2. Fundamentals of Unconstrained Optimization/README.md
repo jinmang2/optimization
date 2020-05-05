@@ -1,5 +1,87 @@
 # Chapter 2. 비제약 최적화 기초
 
+---
+## 들어가기 전에...
+- [smooth function](https://ko.wikipedia.org/wiki/%EB%A7%A4%EB%81%84%EB%9F%AC%EC%9A%B4_%ED%95%A8%EC%88%98)
+해석학에서 smooth function은 무한 번 미분이 가능한 함수.
+만일 smooth function과 모든 점에서의 taylor series 값과 함숫값이 같을 경우엔 analytic function이 된다.
+  - analytic function: 국소적으로 수렴하는 멱급수로 나타낼 수 있는 함
+  - 함수가 한 점에서 해석적이라는 것은 $x_0$ 근방에서 수렴하는 급수가 존재한다는 것.
+  - real-analytic function은 smooth function.
+
+- [Gradient, Jacobian, Hessian, Laplacian](https://darkpgmr.tistory.com/132)
+  - gradient: $\nabla f(p)=\begin{bmatrix}\cfrac{\partial f}{\partial x_1}(p)\\\vdots\\\cfrac{\partial f}{\partial x_n}(p)\end{bmatrix}$
+    - $f:\mathbb{R}^n\rightarrow\mathbb{R}$
+    - $\nabla f:\mathbb{R}^n\rightarrow\mathbb{R}^n$
+    - $f$의 값이 가장 가파르게 증가하는 방향
+    - 함수를 지역적으로 linear approximation하거나 gradient descent로 함수의 극점을 찾는 용도로 사용.
+    - By `First order Taylor Expansion`,
+      $$f(x)\simeq f(p)+\nabla f(p)(x-p)$$
+    - 영상처리에서 gradient는 영상의 edge 및 edge의 방향을 찾는 용도로 활용될 수 있음.
+  - Jacobian: $J=\begin{bmatrix}\cfrac{\partial f}{\partial x_1}&\cdots&\cfrac{\partial f}{\partial x_n}\end{bmatrix}=\begin{bmatrix}\cfrac{\partial f_1}{\partial x_1}&\cdots&\cfrac{\partial f_1}{\partial x_n}\\\vdots&\ddots&\vdots\\\cfrac{\partial f_m}{\partial x_1}&\cdots&\cfrac{\partial f_m}{\partial x_n}\end{bmatrix}$
+    - $f:\mathbb{R}^n\rightarrow\mathbb{R}^m$
+    - notation; $Df,\;J_f,\;\nabla f,\;\cfrac{\partial(f_1,\dots,f_m)}{\partial(x_1,\dots,x_m)}\in\mathbb{R}^{n \times m}$
+    - 다변수 벡터 함수에 대한 일차 미분
+    - By `First order Taylor Expansion`,
+      $$F(x)\simeq F(p)+J_F(p)(x-p)$$
+  - Hessian: $H(f)=\begin{bmatrix}
+    \frac{\partial^2 f}{\partial x_1^2}&\frac{\partial^2 f}{\partial x_1 \partial x_2}&\cdots&\frac{\partial^2 f}{\partial x_1 \partial x_n}\\
+    \frac{\partial^2 f}{\partial x_2 \partial x_1}&\frac{\partial^2 f}{\partial x_2^2}&\cdots&\vdots\\
+    \vdots&\vdots&\ddots&\vdots\\
+    \frac{\partial^2 f}{\partial x_n \partial x_1}&\dots&\dots&\frac{\partial^2 f}{\partial x_2^n}
+    \end{bmatrix}$
+      - $\nabla f$에 대한 Jacobian Matrix
+      - $f$의 이계도함수가 연속이면 혼합 편미분은 같고 Hessian은 symmetric이다.
+      - 함수의 곡률(curvature) 특성을 나타내는 행렬
+      - By `Second-order Taylor Expansion`,
+        $$f(x)\simeq f(p) + \nabla f(p)(x-p) + \frac{1}{2}(x-p)^T H(x)(x-p)$$
+      - critical point(임계점)의 종류를 판별하는데 사용
+        - first-derivative가 0이 되는 지점. (stationary point)
+        - local minima / local maxima / saddle point
+      - 함수를 최적화시키기 위해 극점을 찾기 위해서는?
+        - gradient가 0이 되는 지점(critical point)를 찾는다.
+        - 이게 local minima인지 maxima인지 혹은 saddle point인지를 판별하기 위해 Hessian을 사용
+      - 위를 판별하기 위한 방법이 Definite!(eigenvalue의 부호)
+      - Hessian은 symmetric(연속인 함수에 대해)이므로 항상 eigenvalue decomposition이 가능.
+        - 즉, 서로 orthogonal한 n개의 eigenvector를 가짐.
+      - 이미지에서의 Hessian은 이미지 I(x,y)를 (x,y)에서의 픽셀의 밝기를 나타내는 함수로 봄
+      - 좀 더 수학적으로 이해해보자.
+      - $\text{h}\in\mathbb{R}^n$에 대해
+      $$\nabla f := f(x_0+h)-f(x_0) \approx J(x_0)\text{h}+\frac{1}{2}\text{h}^T H(f)(x_0)(\text{h})$$
+        - 만일 $x_0$가 임계점이면 $Df(x_0)=0$이므로
+        $$\nabla f \approx \frac{1}{2}\text{h}^T H(f)(x_0)(\text{h})$$
+      - $\nabla^2 f$가 연속일 경우 Hessian Matrix는 symmetric.
+      - By `Spectrum Theorem`, Hessian 행렬을 OrthoDiagonal하게 만들 수 있음.
+      $$\mathcal{Q}(\text{h})=\text{h}^T H(f) \text{h} = \text{h}^T Q \Lambda Q^T \text{h}=(\text{h}Q^T)^T \Lambda Q^T \text{h}$$
+        - 행렬의 정부호성, definite를 체크하기 위해 아래 수식과 0을 비교
+        $$\forall \text{h} \neq \overrightarrow{0},\;\text{h}^T H \text{h}=Q(\text{h})$$
+        - spectral theory는 아래 수식을 의미
+        $$H(f)=Q\Lambda Q^T$$
+        - $\text{u}=Q^T\text{h}$로 두어 아래와 같이 수식화.
+        $$\mathcal{Q}(\text{u})=\lambda_1 u_1^2 + \lambda_2 u_2^2 + \cdots + \lambda_n u_n^2$$
+      - 위의 판별은 아래와 같이 진행.
+        - $\Lambda$의 대각성분, 즉 Hessian 행렬의 고윳값이 모두 양수일 경우, $H(f)$는 `positive definite`이고 critical point는 `local minima`.
+        - $\Lambda$의 대각성분, 즉 Hessian 행렬의 고윳값이 모두 음수일 경우, $H(f)$는 `negative definite`이고 critical point는 `local maxima`.
+        - $\Lambda$의 대각성분, 즉 Hessian 행렬의 고윳값에 양수와 음수가 섞여 있는 경우, $H(f)$는 `indefinite`이고 critical point는 `saddle point`.
+
+- [Spectrum Theorem](https://ko.wikipedia.org/wiki/스펙트럼_정리)
+  - Linear Transformation을 eigenvalue와 eigenvalue의 일반화인 spectrum으로 나타내는 일련의 정리
+  - for `Matrix`
+    - Let $A:\mathbb{C}^n\rightarrow\mathbb{C}^n$ be Hermitian matrix.
+      즉, $A=A^\ast$
+      - By Spectrum Theorem, $\exist\;orthonormal\;basis\;of\;\mathbb{C}^n\;\text{constructed by }A's\;eigenvectors.\;so\;that;$
+      $$A=U\text{diag}(\lambda_1,\dots,\lambda_n)U^\ast$$
+        - $U:\;Unitary\;Matrix\;s.t\;U^\ast=U^{-1}$
+        - $U$의 행과 열 벡터들은 $\mathbb{C}^n$의 정규 직교 기저를 이룬다.
+    - Let $A:\mathbb{R}^n\rightarrow\mathbb{R}^n$ be symmetric.
+      즉, $A=A^T$
+      - By Spectrum Theorem, $\exist\;orthonormal\;basis\;of\;\mathbb{R}^n\;\text{constructed by }A's\;eigenvectors.\;so\;that;$
+      $$A=Q\text{diag}(\lambda_1,\dots,\lambda_n)Q^\ast$$
+        - $Q:\;Orthogonal\;Matrix\;s.t\;Q^T=Q^{-1}$
+        - $Q$의 행과 열 벡터들은 $\mathbb{R}^n$의 정규 직교 기저를 이룬다.
+
+---
+
 **unconstrained optimization;**
 - 변수의 모든 값에 대해 어떠한 제약도 없는 실숫값 변수에 종속적인 목적 함수를 최소화
 $$\min_{x}\;f(x)\quad\cdots\quad(2.1)$$
@@ -107,7 +189,7 @@ $$f(x+p)=f(x)+\nabla f(x)^T p +\frac{1}{2}p^T\nabla^2 f(x+tp) p \quad\cdots\quad
 $\quad \text{for some }t\in(0,1)$
 
 $Thm\;2.2.\text{ (First-Order Necessary Conditions)}$
-$\quad\quad \text{if }x^\ast \text{is a local minimizer and }f\text{ is continuously differentiable}$
+$\quad\quad \text{if }x^\ast \text{is a }local\;minimizer\text{ and }f\text{ is }continuously\;differentiable$
 $\quad \text{in an open nighborhood of }x^\ast\text{, then }\nabla f(x^\ast)=0$
 
 $pf)$
@@ -129,3 +211,66 @@ Hence, 해당 조건에서 x에서의 gradient는 0이다. 증명 끝.
 ```
 
 $\nabla f(x^\ast)=0$을 만족하는 점 $x^\ast$를 _stationary point_ 라 부른다. 정리 2.2에 따르면 위 조건을 만족하는 local minimizer는 stationary point가 된다.
+
+$Recall\;that;$
+- $\text{matrix }B\text{ is }positive\;definite\text{ if }p^T Bp>0\;\forall p \neq 0$
+- $\text{matrix }B\text{ is }positive\;semidefinite\text{ if }p^T Bp \geq 0\;\forall p \neq 0$
+- 여기서 $p$는 $n$차원 실수의 non-zero 열 벡터이다.
+- $B$는 $n \times n$의 정방행렬. (symmetric or Hermitian)
+- 위 행렬 $p^T B p$는 scalar 값이다.
+- [정부호 행렬(definite matrix)](https://ko.wikipedia.org/wiki/%EC%A0%95%EB%B6%80%ED%98%B8_%ED%96%89%EB%A0%AC)을 참고하라.
+- 이를 만족시킬 시의 특징은?
+  - eigenvalue가 모두 양수
+  - 임의의 두 벡터 $x, y$에 대해 $<x, y>=x^\ast M y$로 내적을 정의하는 것이 가능하다.
+  - $M$은 gram 행렬. 어떠한 linear independent vector $x_1,\cdots,x_n$이 존재하여 $M_{ij}=x_i^\ast x_j$가 성립.
+  - $M=LL^\ast$가 만족하는 lower triangle matrix $L$이 유일하게 존재.
+    - 이러한 분해를 Cholesky Decomposition이라고 함.
+
+$Thm\;2.3.\text{ (Second-Order Necessary Conditions)}$
+$\quad\quad \text{if }x^\ast \text{is a }local\;minimizer\text{ and }f\text{ is }continuously\;differentiable$
+$\quad \text{in an }open\;nighborhood\text{ of }x^\ast\text{, then }\nabla f(x^\ast)=0\text{ and }\nabla^2 f(x^\ast)\text{ is }positive\;semidefinite$
+
+$pf)$
+```
+thm 2.2에 의해 grad(f(x))=0인 것은 clear.
+x가 local minimizer이고 f가 continuously differentiable이지만
+grad^2(f(x))가 positive semidefinite가 아니라고 가정하자.
+positive semidefinite가 아니니 정의에서 p^Tgrad^2(f(x))p < 0인 p 벡터를 택하자.
+조건에서 grad^2f가 x 근방에서 연속이기 때문에 아래 조건을 만족하는 양수 T가 존재한다.
+    p^T grad^2(f(x + tp)) p < 0  for all t \in [0, T]
+x 근방에 Taylor 급수 expansion을 통해,
+    f(x + t_hat p) =
+    f(x) + t_hat p^T grad(f(x)) + 1/2 t_hat^2 p^T grad^2(f(x + tp)) p < f(x)
+    for all t_hat \in (0, T] and some t \in (0, t_hat)
+x의 근방에서 f가 감소하는 방향이 존재하므로 x는 local minima가 아니다.
+즉, contradiction 발생. grad^2(f(x))는 positive semidefinite이다.
+증명 완료.
+```
+
+$Thm\;2.4.\text{ (Second-Order Sufficient Conditions)}$
+$\quad\quad \text{Suppose that }\nabla^2 f\text{ is }continuous\text{ in an }open\;neighborhood\text{ of }x^\ast$
+$\quad\text{and that }\nabla f(x^\ast)=0\text{ and }\nabla^2 f(x^\ast)\text{ is }positive\;definite.$
+$\quad\text{Then }x^\ast\text{ is a }strict\;local\;minimizer\text{ of }f.$
+
+$pf)$
+```
+조건에서 Hessian(2차 미분)이 x에서 연속이고 positive definite이므로,
+open ball D={z|dist(z-x)<r}의 모든 point z에 대해 grad^2(f(z))가 여전히
+positive definite가 되도록하는 양수의 반지름 r을 택할 수 있다.
+(why? >> 이는 내 증명이므로 틀릴 수 있음. 논쟁은 언제나 환영.
+    조건에서 우선 0벡터가 아닌 모든 p에 대해 아래가 성립
+        p^TH(x)p > 0
+    grad^2(f)가 x에서 연속이다. 즉,
+      (1) x에서 함수값이 존재하고
+      (2) x 근방의 모든 방향에서 극한 값을 가진다.
+          lim_{z->x}grad^2(f(z)) = grad^2(f(x))
+    극한의 정의는?
+        주어진 모든 양수 epsilon에 대해 아래 조건을 만족하는 delta를 항상 찾을 수 있다.
+        |x - z| < delta  ->  |grad^2(f(x)) - grad^2(f(z))| < epsilon
+    그 delta를 r이라 하자. (위상공간에서 우극한 좌극한의 개념을 open ball로 확장시킬 수 있다.)
+
+)
+```
+
+- http://matrix.skku.ac.kr/2014-Album/Quadratic-form/4.Hessian%20matrix.htm
+- https://ko.wikipedia.org/wiki/안장점

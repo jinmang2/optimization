@@ -1,4 +1,8 @@
 # Chapter 2. 비제약 최적화 기초
+- 하나 알아야할게...
+- ch 1장과 2장은 기초 중에 기초...
+- 여기서 헤매면 안됩니다... 미적분학과 선형대수학 다시 듣고 오세요...
+- 전 복습 겸 모르는 것들 생길 때마다 찾아보고 오겠습니다...
 
 ---
 ## 들어가기 전에...
@@ -263,15 +267,153 @@ $pf)$
 - http://www.pitt.edu/~luca/ECON2001/lecture_08.pdf
 
 $Recall\;that$
-- $principal\;submatrix\text{ of }A\in\mathbb{R}^{n \times n}$:
+- $principal\;submatrix\text{ of }A\in\mathbb{R}^{n \times n}$: k번째 행과 열을 제거하여 얻어지는 행렬
+- $principal\;minor\text{ of }A$: principal submatrix의 determinant
+- $\text{leading principal submatrix of order k}\text{ of }M\in\mathbb{R}^{n \times n}$: 행렬의 $n-k$개의 행과 열을 제거하여 얻어지는 행렬
+- $\text{leading principal minor of }M$: leading principal submatrix의 determinant
+- `all of its leading principal minors(upper-left subdeterminants)`?
+    $\begin{array}{ll}
+    \text{if }M\in\mathbb{R}^{n \times n},\\
+    \begin{vmatrix}M_{11}\end{vmatrix},\;\begin{vmatrix}M_{11}&M_{12}\\M_{21}&M_{22}\end{vmatrix},\;\begin{vmatrix}M_{11}&M_{12}&M_{13}\\M_{21}&M_{22}&M_{23}\\M_{31}&M_{32}&M_{33}\end{vmatrix},\;\cdots\;,\;\begin{vmatrix}M_{11}&M_{12}&\cdots&M_{1n}\\\vdots&\vdots&\ddots&\vdots\\M_{n1}&M_{n2}&\cdots&M_{nn}\end{vmatrix}
+    \end{array}$
 ```
 조건에서 Hessian(2차 미분)이 x에서 연속이고 positive definite이므로,
-open ball D={z|dist(z-x)<r}의 모든 point z에 대해 grad^2(f(z))가 여전히
+open ball D={z|dist(z,x)<r}의 모든 point z에 대해 grad^2(f(z))가 여전히
 positive definite가 되도록하는 양수의 반지름 r을 택할 수 있다.
-(why? >>
-    By Sylvester's criterion,
-        symmetric(Hermitian) matrix will be positive definite iff(if and only if)
-        all of its leading principal minors(upper-left subdeterminants) are positive.
+    (why? >>
+        By Sylvester's criterion,
+            symmetric(Hermitian) matrix will be positive definite iff(if and only if)
+            all of its leading principal minors(upper-left subdeterminants) are positive.
+        Note that; leading principal minors는 행렬의 성분에 의해 지속적으로 변화함.
+        that is,
+            Suppose that A is a positive definite 행렬.
+            만약 A의 성분을 아주 조금 변화시킨다면, 이 principal minors는 여전히 양수일 것이다.
+            (why? 연속! epsilon 반경 안에 잡을 수 있다는 얘기.)
+        In other words,
+            A 주변에서 항상 양수의 leading principal minors를 가지는 행렬의 open ball을 찾을 수 있다.
 
-)
+        자, 말로 설명하지 말고 수식적으로 보자.
+
+        위를 수식으로 표현하면 아래와 같다.
+            \exist \epsilon > 0 s.t
+                if MatNorm(A - grad^2(f(x))) < \epsilon,
+                then A has positive minors.
+        Since grad^2(f(x))가 연속,
+            \exist \delta s.t
+                if dist(z - x) < \delta,
+                then MatNorm(H(f(z)) - H(f(x))) < \epsilon
+        즉, dist(z-x) < \delta면 grad^2(f(x))는 positive definite.
+        r = \delta로 채택.
+        그러면 open ball D = {z | dist(z, x) < r}의 모든 점 z에 대해 여전히
+        H(f(z))가 positive definite.
+
+        +추가) 여기서 위에 MatNorm(H(f(z)) - H(f(x))) < \eps부분, 여기까진 내가 생각했는데,
+        여기서 quadratic form으로 바꿔서 그 값의 하나하나가 eps로 잡혀야하나?
+        하는 이상한 생각까지 가서... 오 그래도 leading principal minors 개념으로
+        뭔가 compact하게 증명했다. 맘에 들어!
+    )
+norm(p) < r인 nonzero vector p를 택하자.
+x + p \in D에 대해,
+    f(x+p) = f(x) + p^T grad(f(x)) + 0.5 p^T grad^2(f(z)) p
+           = f(x) + 0.5 p^T grad^2(f(z)) p (since grad(f(x))=0.)
+    where z = x + tp for some t \in (0, 1).
+Since z \in D, p^T H(f(z)) p > 0. (because remain positive definite.)
+Therefore f(x + p) > f(x).
+Hence, x is a strict local minimizer of f.
+증명 완료.
 ```
+
+$Note\;that$;
+- 위 정리는 충분 조건이지 필요조건이 아님.
+- $f(x)=x^4$에서 $x^\ast=0$은 strict local minima지만 Hessian matrix는 소실(Vanish)되며 즉 positive definite가 아님.
+
+objective function이 convex인 경우, local과 global minimizer는 쉽게 정의할 수 있음.
+
+$Thm\;2.5.$
+$\quad\quad\text{When }f\text{ is convex, any }local\;minimizer\text{ }x^\ast\text{ is a }global\;minimizer\text{ of }f.$
+$\quad\quad\text{If in addition }f\text{ is }differentiable,\text{ then any }stationary\;point\;x^\ast\text{ is a }global\;minimizer\text{ of }f.$
+
+$pf)$
+```
+Part 1.
+    Suppose that x* : local but not a global minimizer.
+    Then, \exist point z \in \mathbb{R}^n s.t f(z) < f(x*). (global minima가 아니니까!)
+    Consider the "line segment" that joins x* to z,
+        x = \lambda z + (1 - \lambda) x*,    for some \lambda \in (0, 1] (2.7)
+    By the convexity property for f,
+        f(x) \leq \lambda f(z) + (1 - \lambda) f(x*) < f(x*) (2.8)
+        (why?
+            \lambda f(z) + (1 - \lambda) f(x*) < \lambda f(x*) + (1 - \lambda) f(x*) = f(x*)
+        )
+    위에서 x* 근방 \mathcal{N}이 (2.7)의 "line segment"의 일부를 포함하기 때문에
+    x \in \mathcal{N} s.t (2.8)한 x를 찾을 수 있고,
+    Hence, x*는 local minimizer가 아니다.
+증명 완료.
+
+Part 2.
+    증명 안해.
+```
+
+기초 미적분학에 기반하는 위의 결과들은 비제약 최적화 알고리즘의 기반을 제공
+모든 알고리즘은 $\nabla f(\cdot)$이 소실되는 점을 찾는다.
+
+#### Nonsmooth problems
+본 교재에서는 smooth function(무한번 미분 가능)에 초점을 맞춤. 뭐, 주로 2차 미분이 존재하고 연속인 함수들. 그러나 대부분 불연속에 smooth하지 않은 경우가 존재. 일반적인 불연속 함수에서 minimizer를 정의하는 것은 불가능하지만, 함수가 smooth한 부분을 포함한다면 개별적인 smooth piece에서의 minimizer를 찾는 것은 가능.
+
+![optim_fig_2 3](https://user-images.githubusercontent.com/37775784/81149412-2292f700-8fb9-11ea-9585-adcb34b02f16.PNG)
+
+위의 함수는 모든 곳에서 연속이지만 특정 점에서 미분이 불가능하다.
+이걸 뭐, `subgradient`, `generalized gradient`등의 nonsmooth optimizatoin 방법론으로 해결할 수 있다네?
+
+## 2.2 Overview of Algorithms
+
+지난 40년(언제 출판됐지?)간 smooth functions에 대한 비제약 최적화 알고리즘들이 수없이 개발됐다고 하네. 이를 Chapter 3~7장에서 소개.
+모든 비제약 최적화 문제는 사용자에서 시작 지점을 요구.
+API와 dataset에 대한 이해를 가진 유저는 $x_0$를 합리적인 이유로 solution을 추정하는데 좋은 position으로 채택할 것. (**제일 중요!!!**)
+위와 같이 할 수도 있지만, 시스템적으로 혹은 임의로 정해서 시작할 수도 있겠지.
+
+$x_0$에서 시작하여 최적화 알고리즘은 더 이상의 진척이 없거나 solution 지점이 충분한 정확도로 근사됐을 때 종료되는 반복 $\{x_k\}_{k=0}^{\infty}$ sequence를 생성한다. 알고리즘은 $x_k$, 이전 점들에서의 $f$에 대한 정보를 사용하여 iterate $x_k$에서 어디로 갈지를 결정한다.
+
+$x_k$에서 $x_{k+1}$로 어떻게 update해야하는지에 대한 두 가지 기본 전략이 있다. 이 책의 대부분의 알고리즘들은 둘 중 하나의 접근 방식을 따른다.
+
+#### Two strategies: Line search and Trust region
+
+**Line Search strategy**
+- direction $p_k$를 고르고 해당 방향을 따라 더 작은 함수값을 가지는 다음 iterate를 찾는다.
+- $p_k$를 따라 갈 거리는 아래 step length $\alpha$를 찾기 위해 1차원 최소화 문제를 근사적으로 풀어서 얻어진다.
+    $$\min_{\alpha>0}f(x_k + \alpha p_k)\quad\cdots\quad (2.10)$$
+- (2.10)을 풀면 $p_k$ 방향으로 부터 최대 이득을 얻을 수 있지만 정확하게 최소화하는 지점을 찾아가는 것은(올곧게) 비쌀 수 있으며 보통 불필요하다.
+- 대신, `line search` 알고리즘은 (2.10)의 최소치에 근접한 실험 단계를 찾을 때까지 제한된 수의 test 단계 length를 생성
+- 새로운 지점에서 새로운 검색 방향과 step length를 재계산하고 이 과정을 반복.
+
+**Trust Region strategy**
+- $f$로부터 얻은 정보를 토대로 `model function` $m_k$를 구축
+    - $x_k$ 근방에서의 움직임이 실제 목적 함수 $f$와 유사하게 움직이게 하는 함수
+- $x$가 $x_k$에서 멀리 떨어져 있을 시 모델 $m_k$는 $f$를 잘 근사하지 못하기에 $m_k$의 최소화에 대한 search를 $x_k$ 주변의 일부 region으로 제한.
+- 즉, 아래의 subproblem을 근사적으로 푸는 후보 step $p$를 찾는다.
+    $$\min_p m_k(x_k+p),\quad\text{where }x_k+p\text{ lies inside the trust region.}\quad\cdots\quad(2.11)$$
+- solution 후보가 $f$에서 감솟값이 시원치 않으면, trust region을 너무 크게 잡았다고 결론짓고 이를 수축시켜 (2.11)을 다시 푼다.
+- 보통 trust region은 $\Vert p \Vert_2 \leq \Delta$로 정의된 ball이다.
+    - 위에서 $\Delta > 0$는 trust-region의 반지름이다.
+- model $m_k$는 일반적으로 아래와 같이 quadratic function으로 정의된다.
+    $$m_k(x_k+p)=f_k+p^T \nabla f_k + \frac{1}{2} p^T B_k p,\quad\cdots\quad (2.12)$$
+    - $f_k,\nabla f_k,B_k$: scalar, vector, matrix
+    - $f_k$와 $\nabla f_k$는 $x_k$에서의 함수 및 gradient 값으로 선택되므로 $m_k$와 $f$는 현재 iterate $x_k$에서 1차까지 공유함.
+    - $B_k$는 Hessian $\nabla^2 f_k$ 혹은 이를 근사한 행렬.
+
+아래 예시를 한 번 보자.
+
+---
+$f(x)=10(x_2 - x_1^2)^2 + (1 - x_1)^2$가 objective function으로 주어졌다고 가정하자.
+point $x_k=(0,1)$에서의 gradient와 Hessian은
+$$\nabla f_k=\begin{bmatrix}-2\\20\end{bmatrix},\quad\nabla^2 f_k=\begin{bmatrix}-32&0\\0&20\end{bmatrix}$$
+
+![image](https://user-images.githubusercontent.com/37775784/81159997-8838b080-8fc4-11ea-91f3-71d6a81c9c3a.png)
+
+위 그림은 $B_k=\nabla^2 f_k$, (2.12)의 quadratic model의 contour line이다. 추가적으로 objective function $f$와 trust region도 같이 표시하고 있다. 그림은 또한 model $m_k$가 1과 12의 값을 가질 때의 contour line을 표시하고 있다. 위 그림에서 주의할 점은, 후보 iterate 실패 후 trust region의 크기를 줄일 때마다 $x_k$에서 다음 후보까지의 거리가 짧아지고 이는 통상 다음 후보와 다른 방향을 가리키게 된다는 점이다. trust-region 전략은 single search direction을 가지는 line search와 이런 점에서 다르다.
+
+즉, `line search`와 `trust-region` 접근법은 다음 iterate로 옮길 때 사용할 `direction`과 `distance`를 고르는 방식에서 차이가 난다. line search는 고정된 direction $p_k$에서 시작하고 적절한 step length $\alpha_k$라 불리는 distance를 정의한다. trust region에서는 최대 distance(trust-region radius) $\Delta_k$를 고르고 방향을 탐색하며 이 distance constraint에서 최고의 성능을 보이는 쪽으로 발걸음을 옮긴다. 만일 해당 step이 불만족스럽다면 distance measure $\Delta_k$를 줄이고 다시 시도한다.
+
+
+
+---

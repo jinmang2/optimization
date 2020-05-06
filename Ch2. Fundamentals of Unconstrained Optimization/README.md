@@ -80,6 +80,10 @@
         - $Q:\;Orthogonal\;Matrix\;s.t\;Q^T=Q^{-1}$
         - $Q$의 행과 열 벡터들은 $\mathbb{R}^n$의 정규 직교 기저를 이룬다.
 
+- http://matrix.skku.ac.kr/2014-Album/Quadratic-form/4.Hessian%20matrix.htm
+- https://ko.wikipedia.org/wiki/안장점
+
+
 ---
 
 **unconstrained optimization;**
@@ -253,24 +257,21 @@ $\quad\text{and that }\nabla f(x^\ast)=0\text{ and }\nabla^2 f(x^\ast)\text{ is 
 $\quad\text{Then }x^\ast\text{ is a }strict\;local\;minimizer\text{ of }f.$
 
 $pf)$
+- https://math.stackexchange.com/questions/1477978/positive-definite-and-continuous-function
+- https://en.wikipedia.org/wiki/Sylvester%27s_criterion
+- https://en.wikipedia.org/wiki/Minor_(linear_algebra)
+- http://www.pitt.edu/~luca/ECON2001/lecture_08.pdf
+
+$Recall\;that$
+- $principal\;submatrix\text{ of }A\in\mathbb{R}^{n \times n}$:
 ```
 조건에서 Hessian(2차 미분)이 x에서 연속이고 positive definite이므로,
 open ball D={z|dist(z-x)<r}의 모든 point z에 대해 grad^2(f(z))가 여전히
 positive definite가 되도록하는 양수의 반지름 r을 택할 수 있다.
-(why? >> 이는 내 증명이므로 틀릴 수 있음. 논쟁은 언제나 환영.
-    조건에서 우선 0벡터가 아닌 모든 p에 대해 아래가 성립
-        p^TH(x)p > 0
-    grad^2(f)가 x에서 연속이다. 즉,
-      (1) x에서 함수값이 존재하고
-      (2) x 근방의 모든 방향에서 극한 값을 가진다.
-          lim_{z->x}grad^2(f(z)) = grad^2(f(x))
-    극한의 정의는?
-        주어진 모든 양수 epsilon에 대해 아래 조건을 만족하는 delta를 항상 찾을 수 있다.
-        |x - z| < delta  ->  |grad^2(f(x)) - grad^2(f(z))| < epsilon
-    그 delta를 r이라 하자. (위상공간에서 우극한 좌극한의 개념을 open ball로 확장시킬 수 있다.)
+(why? >>
+    By Sylvester's criterion,
+        symmetric(Hermitian) matrix will be positive definite iff(if and only if)
+        all of its leading principal minors(upper-left subdeterminants) are positive.
 
 )
 ```
-
-- http://matrix.skku.ac.kr/2014-Album/Quadratic-form/4.Hessian%20matrix.htm
-- https://ko.wikipedia.org/wiki/안장점
